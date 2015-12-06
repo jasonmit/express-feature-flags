@@ -2,23 +2,23 @@
 
 import get from 'lodash.get';
 
-const BUILT_IN_PREDICATES = {
-  contains(needle, value) {
-    if (typeof value === 'string') {
-      return needle.includes(value);
-    }
-
-    return value.includes(needle);
-  },
-
-  eq(needle, value) {
-    return needle === value;
-  }
-}
+const predicateSymbol = Symbol();
 
 class Builder {
   constructor() {
-    this.addPredicates(BUILT_IN_PREDICATES);
+    this.addPredicates({
+      contains(needle, value) {
+        if (typeof value === 'string') {
+          return needle.includes(value);
+        }
+
+        return value.includes(needle);
+      },
+
+      eq(needle, value) {
+        return needle === value;
+      }
+    });
   }
 
   build(definition, context) {
@@ -28,7 +28,7 @@ class Builder {
       let enabled = true;
 
       for (let rule of rules) {
-        let predicate = this.predicates[rule.type];
+        let predicate = this[predicateSymbol][rule.type];
 
         if (!predicate) {
           throw new Error(`Missing predicate ${rule.type}`);
@@ -57,11 +57,11 @@ class Builder {
   }
 
   addPredicate(type, fn) {
-    this.predicates[type] = fn;
+    this[predicateSymbol][type] = fn;
   }
 
   addPredicates(predicates) {
-    this.predicates = Object.assign(this.predicates || {}, predicates);
+    this[predicateSymbol] = Object.assign(this[predicateSymbol] || {}, predicates);
   }
 }
 
