@@ -44,6 +44,10 @@ const features = {
   }
 };
 
+// this would typically be built up as a combination
+// of application and user-specific context.
+// In terms of an Express application, this would likely 
+// be `Object.assign({}, app.locals, req.locals);`
 const context = {
   timestamp: new Date().getTime(),
   user: {
