@@ -37,12 +37,16 @@ class Builder {
         const { key } = rule;
         const contextValue = get(context, rule.key);
 
-        const result = predicate(contextValue, rule.value, {
+        let result = predicate(contextValue, rule.value, {
           context,
           key
         });
 
-        if ((rule.inverse && result) || !result) {
+        if (rule.inverse) {
+          result = !result;
+        }
+
+        if (!result) {
           enabled = false;
           break;
         }
