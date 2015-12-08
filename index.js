@@ -36,8 +36,13 @@ class Builder {
 
         const { key } = rule;
         const contextValue = get(context, rule.key);
+        let ruleValue = rule.value;
 
-        let result = predicate(contextValue, rule.value, {
+        if (typeof ruleValue === 'function') {
+          ruleValue = ruleValue(context);
+        }
+
+        let result = predicate(contextValue, ruleValue, {
           context,
           key
         });
