@@ -33,14 +33,18 @@ const features = {
     key: 'user.authenticated',
     value: true
   }, {
+    type: 'contains',
+    key: 'supportedLocales',
+    value({ user }) { return user.locale; }
+  }, {
     type: 'gt',
     key: 'timestamp',
     value: 1449297410423
   }],
-  'dinosaurs-two': {
+  'dinosaurs': {
     type: 'contains',
     key: 'movies',
-    value: 'The Good Dinosaur 2'
+    value: 'The Good Dinosaur'
   }
 };
 
@@ -50,16 +54,17 @@ const features = {
 // be `Object.assign({}, app.locals, req.locals);`
 const context = {
   timestamp: new Date().getTime(),
+  supportedLocales: ['en-US', 'en-CA'],
   user: {
     authenticated: true,
     name: 'jasonmit',
     ip: '192.168.2.100',
-    role: 'admin'
+    role: 'admin',
+    locale: 'en-US'
   },
   movies: [
     'The Hunger Games: Mockingjay - Part 2',
-    'The Good Dinosaur',
-    'The Good Dinosaur 2'
+    'The Good Dinosaur'
   ]
 };
 
@@ -68,5 +73,5 @@ builder.build(features, context); // =>
 //   administrator: true,
 //   'is-owner': true,
 //   'display-hidden-feature': true,
-//   'dinosaurs-two': true
+//   'dinosaurs': true
 // }
