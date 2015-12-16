@@ -1,6 +1,6 @@
 'use strict';
 
-import Builder from '../';
+import { Builder } from '../';
 
 const builder = new Builder();
 
