@@ -34,6 +34,7 @@ export default features;
 ```
 
 ```js
+// app/index.js
 import express from 'express';
 import { Builder, middleware:enabled } from 'express-feature-flags';
 import schema from './features-schema';
@@ -55,8 +56,6 @@ app.use((req, res, next) => {
     timestamp: new Date().getTime(),
     user: {
       authenticated: req.user.isAuthenticated,
-      name: req.user.username,
-      ip: req.ip,
       role: req.user.role,
       locale: req.locale.code
     }
@@ -79,11 +78,21 @@ app.use('/admin', enabled('administrator', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
-app.use('/', (req, res, next) => {
-  if (req.locals.enabled['administrator']) {
+app.use('/', (req, res) => {
+  if (res.locals.enabled['administrator']) {
     return res.render('pages/home/power-user');
   }
 
   res.render('pages/home/regular-user');
 });
+```
+
+## TODO
+
+```hbs
+{{#enabled 'ab-test'}}
+  <button class="green btn">Submit</button>
+{{else}}
+  <button class="red btn">Submit</button>
+{{/enabled}}
 ```
