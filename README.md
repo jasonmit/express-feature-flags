@@ -1,6 +1,6 @@
 # express-feature-flags
 
-A small utility for constructing complex feature-flags with Express.
+A tool for constructing complex feature-flags with Express
 
 ## Example
 
