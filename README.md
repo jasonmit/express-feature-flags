@@ -1,6 +1,6 @@
-# feature-flag-builder
+# express-feature-flags
 
-A small utility for constructing complex feature-flags based on rules.
+A small utility for constructing complex feature-flags with Express.
 
 ## Example
 
@@ -35,7 +35,7 @@ export default features;
 
 ```js
 import express from 'express';
-import { Builder, middleware:enabled } from 'feature-flag-builder';
+import { Builder, middleware:enabled } from 'express-feature-flags';
 import schema from './features-schema';
 
 const app = express();
