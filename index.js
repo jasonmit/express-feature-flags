@@ -1,11 +1,13 @@
 'use strict';
 
+import enabled from './lib/middleware';
 import Builder from './lib/builder';
-import middleware from './lib/middleware';
 import helper from './lib/helper';
+import extend from './lib/extend';
 
 export default {
   Builder: Builder,
-  middleware: middleware,
-  helper: helper
+  enabled: enabled,
+  helper: helper,
+  extend: extend
 };

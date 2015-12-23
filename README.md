@@ -6,15 +6,15 @@ A tool for constructing complex feature-flags with Express
 
 ```js
 // app/features-schema.js
-const administratorRule = {
+const administrator = {
   type: 'contains',
   key: 'user.role',
   value: ['admin', 'root', 'sysadmin']
 }
 
 const features = {
-  'administrator': administratorRule,
-  'regular-user': Object.assign({ inverse: true }, administratorRule),
+  'administrator': administrator,
+  'regular-user': Object.assign({ inverse: true }, administrator),
   'hidden-page': [{
     type: 'eq',
     key: 'user.authenticated',
@@ -34,24 +34,22 @@ export default features;
 ```
 
 ```js
-// app/index.js
+// app/server.js
 import express from 'express';
-import { Builder, middleware:enabled } from 'express-feature-flags';
-import schema from './features-schema';
+import feature from 'express-feature-flags';
+import featureSchema from './features-schema';
 
 const app = express();
-const builder = new Builder();
+const featureMiddleware = feature.extend(app, featureSchema);
 
-// add a custom predicate, ships with eq and contains
-builder.addPredicate('gt', (contextValue, value/*, meta*/) => {
+// optional: add a custom predicate
+app.get('enabledFactory').addPredicate('gt', (contextValue, value/*, meta*/) => {
   return contextValue > value;
 });
 
-app.set('builder', builder);
 app.locals.supportedLocales = ['en-US', 'en-CA'];
 
 app.use((req, res, next) => {
-  // step 1, build the request context
   Object.assign(res.locals, {
     timestamp: new Date().getTime(),
     user: {
@@ -64,35 +62,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  // step 2, build the feature flag list based on application and response local variable
-  res.locals.enabled = app.get('builder').build(schema, Object.assign({}, res.locals, app.locals));
-  next();
-});
+/**
+ * Responsible for constructing the enabled feature list on per-request basis.
+ * Ordering the middleware after your request context is finish being
+ * built BUT BEFORE any logic that checks if a feature is enabled
+ * is very important!
+ */
+app.use(featureMiddleware);
 
-app.use('/hidden', enabled('hidden-page', (req, res, next) => {
+app.use('/hidden', feature.enabled('hidden-page', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
-app.use('/admin', enabled('administrator', (req, res, next) => {
+app.use('/admin', feature.enabled('administrator', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
 app.use('/', (req, res) => {
-  if (res.locals.enabled['administrator']) {
+  if (res.enabled('administrator')) {
     return res.render('pages/home/power-user');
   }
 
   res.render('pages/home/regular-user');
 });
-```
-
-## TODO
-
-```hbs
-{{#if (enabled 'green-button-ab-test')}}
-  <button class="green">Submit</button>
-{{else}}
-  <button class="red">Submit</button>
-{{/if}}
 ```
