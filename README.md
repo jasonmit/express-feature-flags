@@ -90,9 +90,9 @@ app.use('/', (req, res) => {
 ## TODO
 
 ```hbs
-{{#enabled 'ab-test'}}
+{{#if (enabled 'ab-test')}}
   <button class="green btn">Submit</button>
 {{else}}
   <button class="red btn">Submit</button>
-{{/enabled}}
+{{/if}}
 ```
