@@ -91,8 +91,8 @@ app.use('/', (req, res) => {
 
 ```hbs
 {{#if (enabled 'green-button-ab-test')}}
-  <button class="green btn">Submit</button>
+  <button class="green">Submit</button>
 {{else}}
-  <button class="red btn">Submit</button>
+  <button class="red">Submit</button>
 {{/if}}
 ```
