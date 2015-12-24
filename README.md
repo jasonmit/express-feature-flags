@@ -36,14 +36,14 @@ export default features;
 ```js
 // app/server.js
 import express from 'express';
-import feature from 'express-feature-flags';
+import featureFlags from 'express-feature-flags';
 import featureSchema from './features-schema';
 
 const app = express();
-const featureMiddleware = feature.extend(app, featureSchema);
+const feature = featureFlags.create(app, featureSchema);
 
 // optional: add a custom predicate
-app.get('enabledFactory').addPredicate('gt', (contextValue, value/*, meta*/) => {
+feature.builder.addPredicate('gt', (contextValue, value/*, meta*/) => {
   return contextValue > value;
 });
 
@@ -68,13 +68,13 @@ app.use((req, res, next) => {
  * built BUT BEFORE any logic that checks if a feature is enabled
  * is very important!
  */
-app.use(featureMiddleware);
+app.use(feature.setup);
 
-app.use('/hidden', feature.enabled('hidden-page', (req, res, next) => {
+app.use('/hidden', feature.middleware('hidden-page', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
-app.use('/admin', feature.enabled('administrator', (req, res, next) => {
+app.use('/admin', feature.middleware('administrator', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
