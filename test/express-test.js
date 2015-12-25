@@ -4,7 +4,6 @@ import mocha from 'mocha';
 import express from 'express';
 import { expect } from 'chai';
 import request from 'supertest';
-
 import { create } from '../';
 
 const app = express();
@@ -19,12 +18,12 @@ describe('Express Integration', () => {
   const app = express();
 
   const feature = create(app, {
-		foo: {
+    foo: {
       type: 'eq',
       key: 'user.name',
       value: 'jasonmit'
     },
-		bar: {
+    bar: {
       type: 'eq',
       key: 'user.name',
       value: 'shawndumas'
@@ -41,11 +40,11 @@ describe('Express Integration', () => {
 
   app.use(feature.setup);
 
-	app.use('/foo', feature.middleware('foo', (req, res, next) => {
+  app.use('/foo', feature.middleware('foo', (req, res, next) => {
     res.send();
   }));
 
-	app.use('/bar', feature.middleware('bar', (req, res, next) => {
+  app.use('/bar', feature.middleware('bar', (req, res, next) => {
     res.send();
   }));
 
@@ -57,7 +56,7 @@ describe('Express Integration', () => {
     expect(feature.middleware).to.exist;
   });
 
-	it('foo should be accessible', (done) => {
+  it('foo should be accessible', (done) => {
     request(app)
       .get('/foo')
       .expect(200)
@@ -70,7 +69,7 @@ describe('Express Integration', () => {
       });
   });
 
-	it('bar should not be accessible', (done) => {
+  it('bar should not be accessible', (done) => {
     request(app)
       .get('/bar')
       .expect(404)
@@ -83,16 +82,19 @@ describe('Express Integration', () => {
       });
   });
 
-	it('should write to res.locals.enabled by default', (done) => {
-		app.use((req, res, next) => {
-			expect(res.locals.enabled).to.be.a('object');
-			expect(res.locals.enabled.foo).to.be.a('boolean');
-			expect(res.locals.enabled.bar).to.be.a('undefined');
-			expect(res.locals.enabled).to.deep.equal({ foo: true });
-	    next();
-	  });
+  it('should write to res.locals.enabled by default', (done) => {
+    app.use((req, res, next) => {
+      expect(res.isEnabled).to.be.a('function');
+      expect(res.locals.enabled).to.be.a('object');
+      expect(res.locals.enabled.foo).to.be.a('boolean');
+      expect(res.locals.enabled.bar).to.be.a('undefined');
+      expect(res.locals.enabled).to.deep.equal({ foo: true });
+      expect(res.isEnabled('foo')).to.equal(true);
+      expect(res.isEnabled('bar')).to.equal(undefined);
+      next();
+    });
 
-		request(app)
+    request(app)
       .get('/')
       .expect(404)
       .end((err, res) => {
@@ -102,5 +104,5 @@ describe('Express Integration', () => {
 
         done();
       });
-	});
+  });
 });

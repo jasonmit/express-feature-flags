@@ -21,7 +21,7 @@ const features = {
     value: true
   }, {
     type: 'contains',
-    key: 'supportedLocales',
+    key: 'locales',
     value({ user }) { return user.locale; }
   }, {
     type: 'gt',
@@ -47,7 +47,7 @@ feature.builder.addPredicate('gt', (contextValue, value/*, meta*/) => {
   return contextValue > value;
 });
 
-app.locals.supportedLocales = ['en-US', 'en-CA'];
+app.locals.locales = ['en-US', 'en-CA'];
 
 app.use((req, res, next) => {
   Object.assign(res.locals, {
@@ -70,6 +70,7 @@ app.use((req, res, next) => {
  */
 app.use(feature.setup);
 
+// conditional route example
 app.use('/hidden', feature.middleware('hidden-page', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
@@ -79,10 +80,20 @@ app.use('/admin', feature.middleware('administrator', (req, res, next) => {
 }));
 
 app.use('/', (req, res) => {
-  if (res.enabled('administrator')) {
+  if (res.isEnabled('administrator')) {
     return res.render('pages/home/power-user');
   }
 
   res.render('pages/home/regular-user');
+});
+```
+
+## Using within a template
+
+### Handlebars
+
+```js
+Handlebars.registerHelper('is-enabled', function(key, options) {
+  return !!options.data.isEnabled(key);
 });
 ```
