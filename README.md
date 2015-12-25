@@ -2,6 +2,8 @@
 
 A tool for constructing complex feature-flags with Express
 
+[![npm Version][npm-badge]][npm]
+
 ## Example
 
 ```js
@@ -97,3 +99,17 @@ Handlebars.registerHelper('is-enabled', function(key, options) {
   return options.data.isEnabled(key);
 });
 ```
+
+### Exposing Feature Flag Hash
+```js
+Handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+```
+
+```js
+window.FEATURES = {{{json @root.enabled}}}
+```
+
+[npm]: https://www.npmjs.org/package/express-feature-flags
+[npm-badge]: https://img.shields.io/npm/v/express-feature-flags.svg?style=flat-square
