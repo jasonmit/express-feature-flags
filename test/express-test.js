@@ -90,7 +90,7 @@ describe('Express Integration', () => {
       expect(res.locals.enabled.bar).to.be.a('undefined');
       expect(res.locals.enabled).to.deep.equal({ foo: true });
       expect(res.isEnabled('foo')).to.equal(true);
-      expect(res.isEnabled('bar')).to.equal(undefined);
+      expect(res.isEnabled('bar')).to.equal(false);
       next();
     });
 

@@ -94,6 +94,6 @@ app.use('/', (req, res) => {
 
 ```js
 Handlebars.registerHelper('is-enabled', function(key, options) {
-  return !!options.data.isEnabled(key);
+  return options.data.isEnabled(key);
 });
 ```
