@@ -38,22 +38,34 @@ describe('Express Integration', () => {
     next();
   });
 
-  app.use(feature.setup);
+  app.use(feature.init());
 
-  app.use('/foo', feature.middleware('foo', (req, res, next) => {
+  function enabled(key, cb) {
+    return function(req, res, next) {
+      if (res.isEnabled(key)) {
+        return cb(...arguments);
+      }
+
+      next();
+    }
+  }
+
+  app.use('/foo', enabled('foo', (req, res, next) => {
     res.send();
   }));
 
-  app.use('/bar', feature.middleware('bar', (req, res, next) => {
+  app.use('/bar', enabled('bar', (req, res, next) => {
     res.send();
   }));
 
-  it('should return a setup function', () => {
-    expect(feature.setup).to.exist;
+  it('should return a init function', () => {
+    expect(feature.init).to.exist;
+    expect(feature.init).to.be.a('function');
   });
 
-  it('should return a middleware function', () => {
-    expect(feature.middleware).to.exist;
+  it('should return a builder instance', () => {
+    expect(feature.builder).to.exist;
+    expect(feature.builder).to.be.a('object');
   });
 
   it('foo should be accessible', (done) => {

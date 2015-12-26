@@ -70,14 +70,24 @@ app.use((req, res, next) => {
  * built BUT BEFORE any logic that checks if a feature is enabled
  * is very important!
  */
-app.use(feature.setup);
+app.use(feature.init());
 
 // conditional route example
-app.use('/hidden', feature.middleware('hidden-page', (req, res, next) => {
+function enabled(key, cb) {
+  return function(req, res, next) {
+    if (res.isEnabled(key)) {
+      return cb(...arguments);
+    }
+
+    next();
+  }
+}
+
+app.use('/hidden', enabled('hidden-page', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
-app.use('/admin', feature.middleware('administrator', (req, res, next) => {
+app.use('/admin', enabled('administrator', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
@@ -90,9 +100,11 @@ app.use('/', (req, res) => {
 });
 ```
 
-## Using within a template
+## Templating Engine Integration
 
 ### Handlebars
+
+#### Template Helper
 
 ```js
 Handlebars.registerHelper('is-enabled', function(key, options) {
@@ -100,7 +112,8 @@ Handlebars.registerHelper('is-enabled', function(key, options) {
 });
 ```
 
-### Exposing Feature Flag Hash
+#### Exposing Feature Flags
+
 ```js
 Handlebars.registerHelper('json', function(context) {
   return JSON.stringify(context);
