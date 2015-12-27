@@ -9,20 +9,15 @@ describe('Builder', function() {
     expect(Builder).to.exist;
   });
 
-  it('should have a addPredicate function', function() {
+  it('should have a registerPredicate function', function() {
     const builder = new Builder();
 
-    expect(builder.addPredicate).to.be.a('function');
+    expect(builder.registerPredicate).to.be.a('function');
   });
 });
 
 describe('Builder Functionality', function() {
   const builder = new Builder();
-
-  // add a custom operation, ships with eq and contains
-  builder.addPredicate('gt', (contextValue, value/*, meta*/) => {
-    return contextValue > value;
-  });
 
   const administratorRule = {
     type: 'contains',

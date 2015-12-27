@@ -45,8 +45,13 @@ const app = express();
 const feature = featureFlags.create(app, featureSchema);
 
 // optional: add a custom predicate
-feature.builder.addPredicate('gt', (contextValue, value/*, meta*/) => {
-  return contextValue > value;
+// supported of the box: eq, neq, contains, gt, gte, lt, lte
+feature.builder.registerPredicate('blank', (value) => {
+  if (typeof value === 'undefined') {
+    return true;
+  }
+
+  return value.length && value.length === 0;
 });
 
 app.locals.locales = ['en-US', 'en-CA'];
