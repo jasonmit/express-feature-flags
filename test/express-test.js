@@ -97,10 +97,10 @@ describe('Express Integration', () => {
   it('should write to res.locals.enabled by default', (done) => {
     app.use((req, res, next) => {
       expect(res.isEnabled).to.be.a('function');
-      expect(res.locals.enabled).to.be.a('object');
-      expect(res.locals.enabled.foo).to.be.a('boolean');
-      expect(res.locals.enabled.bar).to.be.a('undefined');
-      expect(res.locals.enabled).to.deep.equal({ foo: true });
+      expect(res.locals.enabledFeatures).to.be.a('object');
+      expect(res.locals.enabledFeatures.foo).to.be.a('boolean');
+      expect(res.locals.enabledFeatures.bar).to.be.a('undefined');
+      expect(res.locals.enabledFeatures).to.deep.equal({ foo: true });
       expect(res.isEnabled('foo')).to.equal(true);
       expect(res.isEnabled('bar')).to.equal(false);
       next();
