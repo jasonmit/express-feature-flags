@@ -22,7 +22,7 @@ describe('Builder Functionality', function() {
   const administratorRule = {
     type: 'contains',
     key: 'user.role',
-    value: ['admin', 'root', 'sysadmin']
+    expect: ['admin', 'root', 'sysadmin']
   }
 
   const definition = {
@@ -31,21 +31,21 @@ describe('Builder Functionality', function() {
     'is-owner': {
       type: 'eq',
       key: 'user.name',
-      value: 'jasonmit'
+      expect: 'jasonmit'
     },
     'display-hidden-feature': [{
       type: 'eq',
       key: 'user.authenticated',
-      value: true
+      expect: true
     }, {
       type: 'gt',
       key: 'timestamp',
-      value: 1449297410423
+      expect: 1449297410423
     }],
     'dinosaurs': {
       type: 'contains',
       key: 'movies',
-      value: 'The Good Dinosaur'
+      expect: 'The Good Dinosaur'
     }
   };
 

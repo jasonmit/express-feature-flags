@@ -11,7 +11,7 @@ A tool for constructing complex feature-flags with Express
 const administrator = {
   type: 'contains',
   key: 'user.role',
-  value: ['admin', 'root', 'sysadmin']
+  expect: ['admin', 'root', 'sysadmin']
 }
 
 const features = {
@@ -20,15 +20,15 @@ const features = {
   'hidden-page': [{
     type: 'eq',
     key: 'user.authenticated',
-    value: true
+    expect: true
   }, {
     type: 'contains',
     key: 'locales',
-    value({ user }) { return user.locale; }
+    expect({ user }) { return user.locale; }
   }, {
     type: 'gt',
     key: 'timestamp',
-    value: 1449297410423
+    expect: 1449297410423
   }]
 };
 
@@ -46,7 +46,7 @@ const feature = featureFlags.create(app, featureSchema);
 
 // optional: add a custom predicate
 // supported of the box: eq, neq, contains, gt, gte, lt, lte
-feature.builder.registerPredicate('blank', (value/*, meta */) => {
+feature.builder.registerPredicate('blank', (value/*, rule */) => {
   if (typeof value === 'undefined') {
     return true;
   }

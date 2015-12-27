@@ -21,12 +21,12 @@ describe('Express Integration', () => {
     foo: {
       type: 'eq',
       key: 'user.name',
-      value: 'jasonmit'
+      expect: 'jasonmit'
     },
     bar: {
       type: 'eq',
       key: 'user.name',
-      value: 'shawndumas'
+      expect: 'shawndumas'
     }
   });
 
