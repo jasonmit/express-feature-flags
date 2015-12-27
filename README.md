@@ -46,7 +46,7 @@ const feature = featureFlags.create(app, featureSchema);
 
 // optional: add a custom predicate
 // supported of the box: eq, neq, contains, gt, gte, lt, lte
-feature.builder.registerPredicate('blank', (value) => {
+feature.builder.registerPredicate('blank', (value/*, meta */) => {
   if (typeof value === 'undefined') {
     return true;
   }
