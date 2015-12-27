@@ -11,7 +11,7 @@ A tool for constructing complex feature-flags with Express
 const administrator = {
   type: 'contains',
   key: 'user.role',
-  expect: ['admin', 'root', 'sysadmin']
+  comparison: ['admin', 'root', 'sysadmin']
 }
 
 const features = {
@@ -20,15 +20,15 @@ const features = {
   'hidden-page': [{
     type: 'eq',
     key: 'user.authenticated',
-    expect: true
+    comparison: true
   }, {
     type: 'contains',
     key: 'locales',
-    expect({ user }) { return user.locale; }
+    comparison({ user }) { return user.locale; }
   }, {
     type: 'gt',
     key: 'timestamp',
-    expect: 1449297410423
+    comparison: 1449297410423
   }]
 };
 
