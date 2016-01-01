@@ -75,24 +75,24 @@ app.use((req, res, next) => {
  * built BUT BEFORE any logic that checks if a feature is enabled
  * is very important!
  */
-app.use(feature.init());
+app.use(feature.register());
 
-// conditional route example
-function enabled(key, cb) {
+// example of a utility function used to guard routes/middleware
+function is(key, middlewareFunc) {
   return function(req, res, next) {
     if (res.isEnabled(key)) {
-      return cb(...arguments);
+      return middlewareFunc.call(this, req, res, next);
     }
 
     next();
   }
 }
 
-app.use('/hidden', enabled('hidden-page', (req, res, next) => {
+app.use('/hidden', is('hidden-page', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 
-app.use('/admin', enabled('administrator', (req, res, next) => {
+app.use('/admin', is('administrator', (req, res, next) => {
   res.render('pages/hidden-page');
 }));
 

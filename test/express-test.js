@@ -38,29 +38,29 @@ describe('Express Integration', () => {
     next();
   });
 
-  app.use(feature.init());
+  app.use(feature.register());
 
-  function enabled(key, cb) {
+  function is(key, middlewareFunc) {
     return function(req, res, next) {
       if (res.isEnabled(key)) {
-        return cb(...arguments);
+        return middlewareFunc.call(this, req, res, next);
       }
 
       next();
     }
   }
 
-  app.use('/foo', enabled('foo', (req, res, next) => {
+  app.use('/foo', is('foo', (req, res, next) => {
     res.send();
   }));
 
-  app.use('/bar', enabled('bar', (req, res, next) => {
+  app.use('/bar', is('bar', (req, res, next) => {
     res.send();
   }));
 
-  it('should return a init function', () => {
-    expect(feature.init).to.exist;
-    expect(feature.init).to.be.a('function');
+  it('should return a register function', () => {
+    expect(feature.register).to.exist;
+    expect(feature.register).to.be.a('function');
   });
 
   it('should return a builder instance', () => {
